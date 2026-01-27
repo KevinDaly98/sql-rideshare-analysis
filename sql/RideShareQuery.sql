@@ -1,3 +1,5 @@
+# Use the database
+
 USE uberlyftdb;
 
 # View sample sets of each table to help with undertsanding the data
