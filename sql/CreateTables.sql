@@ -1,3 +1,11 @@
+# Need to first create the database for our tables to be housed
+	
+CREATE DATABASE uberlyftdb;
+
+# Lets make sure we are using it here
+	
+USE uberlyftdb;
+
 # Create the trips table
 
 CREATE TABLE trips (
