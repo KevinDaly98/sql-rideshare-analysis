@@ -1,5 +1,3 @@
-# Use the database
-
 USE uberlyftdb;
 
 # View sample sets of each table to help with undertsanding the data
@@ -156,5 +154,26 @@ JOIN weather w ON w.id = t.id
 WHERE w.precipIntensity > 0
 GROUP BY cab_type;
 
+# What are the most 10 most popular trips, source to destination
 
+SELECT COUNT(*) AS trip_count, LEAST(source, destination) AS route_start,
+GREATEST(source, destination) AS route_end, SUM(CASE WHEN cab_type = 'Uber' THEN 1 ELSE 0 END) AS uber_trips, SUM(CASE WHEN cab_type = 'Lyft' THEN 1 ELSE 0 END) AS lyft_trips
+FROM trips
+GROUP BY source, destination
+ORDER BY trip_count DESC
+LIMIT 10;
 
+# What are the average prices each company charges for their top 5 trips? 
+
+WITH CTE AS (SELECT cab_type, LEAST(source, destination) AS route_start,
+GREATEST(source, destination) AS route_end, price FROM trips)
+SELECT AVG(price) AS avg_price, 
+cab_type, 
+route_start,
+route_end,
+COUNT(*) AS trip_count, 
+ROW_NUMBER() OVER (PARTITION BY cab_type ORDER BY COUNT(*) desc) as ranking
+FROM CTE
+GROUP BY route_start, route_end, cab_type
+ORDER BY ranking
+LIMIT 10;
